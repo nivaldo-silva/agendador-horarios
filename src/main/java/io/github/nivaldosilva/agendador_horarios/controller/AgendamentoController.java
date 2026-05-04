@@ -1,5 +1,6 @@
 package io.github.nivaldosilva.agendador_horarios.controller;
 
+import io.github.nivaldosilva.agendador_horarios.docs.AgendamentoDocs;
 import io.github.nivaldosilva.agendador_horarios.dto.AgendamentoDTO;
 import io.github.nivaldosilva.agendador_horarios.entity.enums.StatusAgendamento;
 import io.github.nivaldosilva.agendador_horarios.service.AgendamentoService;
@@ -16,10 +17,11 @@ import java.util.List;
 @RequestMapping("/agendamentos")
 @RequiredArgsConstructor
 @Slf4j
-public class AgendamentoController {
+public class AgendamentoController implements AgendamentoDocs {
 
     private final AgendamentoService agendamentoService;
 
+    @Override
     @PostMapping
     public ResponseEntity<AgendamentoDTO.AgendamentoResponseDTO> salvar(
             @RequestBody @Valid AgendamentoDTO.AgendamentoCreateDTO dto) {
@@ -27,7 +29,7 @@ public class AgendamentoController {
         return ResponseEntity.accepted().body(agendamentoService.salvarAgendamento(dto));
     }
 
-
+    @Override
     @GetMapping
     public ResponseEntity<List<AgendamentoDTO.AgendamentoResponseDTO>> buscar(
             @RequestParam(required = false) String nome,
@@ -37,6 +39,7 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoService.buscarComFiltros(nome, codigo, data));
     }
 
+    @Override
     @PatchMapping("/{codigo}")
     public ResponseEntity<AgendamentoDTO.AgendamentoResponseDTO> atualizar(
             @PathVariable String codigo,
@@ -45,12 +48,14 @@ public class AgendamentoController {
         return ResponseEntity.ok(agendamentoService.alterarAgendamento(codigo, dto));
     }
 
+    @Override
     @PatchMapping("/{codigo}/cancelar")
     public ResponseEntity<AgendamentoDTO.AgendamentoResponseDTO> cancelar(@PathVariable String codigo) {
         log.info("Requisição para cancelar agendamento | codigo: {}", codigo);
         return ResponseEntity.ok(agendamentoService.cancelarAgendamento(codigo));
     }
 
+    @Override
     @PatchMapping("/{codigo}/status")
     public ResponseEntity<AgendamentoDTO.AgendamentoResponseDTO> atualizarStatus(
             @PathVariable String codigo,
